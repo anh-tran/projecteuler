@@ -1,31 +1,54 @@
 <?php
 set_time_limit(60);
-define('MAX_VAL', 30);
+$start_time = microtime(true);
+// your code here
+define('MAX_VAL', 1000000);
 
-$chains = array();
-$chains[1] = 1;
+$chain_terms = array();
+$chain_terms[1] = 1;
 
-$count = 1;
+function chain_terms($n) {
+    global $chain_terms;
+    $chains = array();
+    if (!empty($chain_terms[$n])) return $chain_terms[$n];
 
-do {
-  $flag = FALSE;
-  foreach ($chains as $n => $val) {
-    if ($n > 1 && ($n - 1) % 3 == 0 && intval(($n - 1) / 3) % 2 != 0 && empty($chains[intval(($n - 1) / 3)])) {
-      $chains[intval(($n - 1) / 3)] = $val + 1;
-      if (intval(($n - 1) / 3) < MAX_VAL) $count++;
-      $flag = TRUE;
+    $count = 1;
+    while (empty($chain_terms[$n])) {
+        $chains[$n] = $count;
+        if ($n % 2 == 0) {
+            $n = $n / 2;
+        } else {
+            $n = $n * 3 + 1;
+        }
+        $count++;
     }
-    if (empty($chains[$n * 2])) {
-      $chains[$n * 2] = $val + 1;
-      if ($n * 2 < MAX_VAL) $count++;
-      $flag = TRUE;
+    $count += $chain_terms[$n];
+    foreach ($chains as $number => $term) {
+        if ($number < MAX_VAL) {
+            $chain_terms[$number] = $count - $term;
+        }
     }
-  }
-  
-  if ($count == MAX_VAL - 1) {
-    break;
-  }
-} while ($flag);
-echo count($chains);
+    return $count - 1;
+}
 
+$result = 0;
+$max = 0;
+for ($i = 1; $i < MAX_VAL; $i++) {
+    if ($max < $tmp = chain_terms($i)) {
+        $max = $tmp;
+        $result = $i;
+    }
+}
+echo "Result: $result - $max terms";
+
+// end
+$end_time = microtime(true);
+echo PHP_EOL . "<br>Total execution time: " . ($end_time - $start_time);
+
+// Result: 837799 - 525 terms
+// Total execution time: 18.037631034851
+
+// Cached
+// Result: 837799 - 525 terms
+// Total execution time: 2.8977100849152
 ?>
