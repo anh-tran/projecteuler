@@ -4,7 +4,7 @@ function sum_proper_divisors($n, $primes) {
     if (in_array($n, $primes)) return 1;
     $tmp = $n;
     $sum = 1;
-    
+
     foreach ($primes as $p) {
         $count = 0;
         while ($tmp % $p == 0) {
@@ -19,12 +19,14 @@ function sum_proper_divisors($n, $primes) {
 }
 
 function is_prime($n, $primes) {
+    if (in_array($n, $primes)) return TRUE;
     foreach ($primes as $prime) {
         if ($prime > sqrt($n)) return TRUE;
         if ($n % $prime == 0) return FALSE;
     }
     return TRUE;
 }
+
 function find_primes($n) {
     if ($n < 5) return FALSE;
     $primes = array(2, 3);
